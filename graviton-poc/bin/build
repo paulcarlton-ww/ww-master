@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+
+_my_path() {
+    f=${BASH_SOURCE[0]}
+    cd "$(dirname "${f}")"
+    while f=$(readlink "$(basename "${f}")"); do
+        cd "$(dirname "${f}")"
+    done
+    pwd -P
+}
+
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "${REPO_ROOT}"
+
+source "lib/log.sh"
+
+PATH=./bin/:${PATH}
+
+setup_builders() {
+    heading "Setting up builder instances in EKS..."
+    if ! docker buildx ls | grep arm64builder &> /dev/null; then
+        # Create builder for ARM64.
+        subheading "Creating arm64builder..."
+        docker buildx create --name k8sbuilder \
+            --node arm64builder \
+            --platform linux/arm64 \
+            --driver kubernetes \
+            --driver-opt image=pcarlton/fs-buildkit:latest-arm64,namespace=tekton-builder,replicas=1,nodeselector=beta.kubernetes.io/arch=arm64,rootless=true
+        success-step "arm64builder configured."
+    fi
+
+    if ! docker buildx ls | grep amd64builder &> /dev/null; then
+        # Create builder for AMD64.
+        subheading "Creating amd64builder..."
+        docker buildx create --name k8sbuilder \
+            --append \
+            --node amd64builder \
+            --platform linux/amd64 \
+            --driver kubernetes \
+            --driver-opt image=pcarlton/fs-buildkit:latest-amd64,namespace=tekton-builder,replicas=1,nodeselector=beta.kubernetes.io/arch=amd64,rootless=true
+        success-step "amd64builder configured."
+    fi
+
+    docker buildx use k8sbuilder
+
+    # List the builders in Docker.
+    docker buildx ls
+
+    success "k8sbuilder instances set up!"
+}
+
+build-hello() {
+    # Build Hello for ARM64 and AMD64 using BuildKit.
+    heading "Building hello apps..."
+    docker buildx bake --progress plain hello-publish
+    success "hello apps are built!"
+
+    heading "Verifying hello apps..."
+    file .out/raw-amd64/hello | tee >(grep -q 'x84-64')
+    file .out/raw-arm64/hello | tee >(grep -q 'ARM aarch64')
+    success "hello apps are verified!"
+
+    stage-docker-tarball .out/hello-dockerload-amd64.tar .out/hello-dockerload-arm64.tar
+}
+
+build-fs-buildkit() {
+    heading "Building fs-buildkit..."
+    docker buildx bake --progress plain fs-buildkit-publish
+    success "fs-buildkit is built!"
+
+    stage-docker-tarball .out/fs-buildkit-dockerload-amd64.tar .out/fs-buildkit-dockerload-arm64.tar
+}
+
+build-tekton-buildkit-builder() {
+    heading "Building tekton-buildkit-builder..."
+    docker buildx bake --progress plain tekton-buildkit-builder-publish
+    success "tekton-buildkit-builder is built!"
+
+    stage-docker-tarball .out/tekton-buildkit-builder-dockerload.tar
+}
+
+stage-docker-tarball() {
+    if command -v ci &> /dev/null; then
+        heading "Staging docker tarballs for publication..."
+        for tarball in "$@"; do
+            ci stage-docker "${tarball}"
+        done
+        success "docker tarballs staged!"
+    else
+        heading "Loading docker tarballs locally..."
+        for tarball in "$@"; do
+            docker load < "${tarball}"
+        done
+        success "docker tarballs loaded!"
+    fi
+}
+
+clean() {
+    rm -rf .out
+    mkdir -p .out
+}
+
+_build_main() {
+    set -euo pipefail
+
+    clean
+    setup_builders
+
+    if [[ -n "${*}" ]]; then
+        TARGETS=("${@}")
+    else
+        TARGETS=(
+            "fs-buildkit"
+            "tekton-buildkit-builder"
+            "hello"
+        )
+    fi
+
+    for target in "${TARGETS[@]}"; do
+        "build-${target}"
+    done
+}
+
+# Run if we are not sourced
+if [[ "$0" == "${BASH_SOURCE[0]}" ]]; then
+    if [[ "${CI:-false}" == "true" ]]; then
+        # Configure AWS client for EKS authentication.
+        info "In CI build; using credentials from Rio Build Secrets..."
+        # shellcheck disable=SC2154
+        export AWS_SHARED_CREDENTIALS_FILE=${BUILD_SECRETS_PATH}/aws-credentials
+        export KUBECONFIG=${BUILD_SECRETS_PATH}/eks-kubeconfig
+    fi
+    _build_main "${@}"
+else
+    echo "Sourced from ${BASH_SOURCE[0]}:"
+    sed -r -n 's/^([a-zA-Z].*)\(\) \{/  \1/p' "${BASH_SOURCE[0]}"
+fi

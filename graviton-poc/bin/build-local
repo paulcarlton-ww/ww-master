@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+_my_path() {
+    f=${BASH_SOURCE[0]}
+    cd "$(dirname "${f}")"
+    while f=$(readlink "$(basename "${f}")"); do
+        cd "$(dirname "${f}")"
+    done
+    pwd -P
+}
+
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "${REPO_ROOT}"
+
+source "lib/log.sh"
+
+PATH=./bin/:${PATH}
+
+docker run \
+    --interactive \
+    --tty \
+    --rm \
+    --volume "${REPO_ROOT}":/workspace \
+    --workdir /workspace \
+    --volume ~/.kube/kubeconfig_tekton-builder.yaml:/root/.kube/config \
+    --volume ~/.aws/amp_tekton_builder_system_user-credentials:/root/.aws/credentials \
+    --privileged \
+    --volume /var/run/docker.sock:/var/run/docker.sock \
+    pcarlton/fs-graviton-builder:latest \
+    bin/build

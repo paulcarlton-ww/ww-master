@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+_my_path() {
+    f=${BASH_SOURCE[0]}
+    cd "$(dirname "${f}")"
+    while f=$(readlink "$(basename "${f}")"); do
+        cd "$(dirname "${f}")"
+    done
+    pwd -P
+}
+
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "${REPO_ROOT}"
+
+source "lib/log.sh"
+
+PATH=./bin/:${PATH}
+ERRORS=0
+
+report_status() {
+    if "$@"; then
+        success "$1 checks pass!"
+    else
+        err "$1 checks fail!"
+        ERRORS=$((ERRORS + 1))
+    fi
+}
+
+mapfile -t SHELLSCRIPTS < <(shfmt -f .)
+mapfile -t DOCKERFILES < <(find . -name Dockerfile)
+
+heading "Checking Dockerfiles using hadolint..."
+report_status hadolint "${DOCKERFILES[@]}"
+
+heading "Checking shellscripts using shellcheck..."
+report_status shellcheck --enable=all "${SHELLSCRIPTS[@]}"
+
+heading "Checking shellscripts for formatting errors using shfmt..."
+report_status shfmt -l -d "${SHELLSCRIPTS[@]}"
+
+heading "Evaluating tekton.pcl to check for errors..."
+if [[ "$(uname)" == "Linux" ]]; then
+    PCL_DOWNLOAD_URL=https://artifacts.fs.com/libs-release/com/fs/pcl/pcl-cli-linux/0.15.0/pcl-cli-linux-0.15.0.bin
+else
+    PCL_DOWNLOAD_URL=https://artifacts.fs.com/libs-release/com/fs/pcl/pcl-cli-macos/0.15.0/pcl-cli-macos-0.15.0.bin
+fi
+
+if [[ ! -x "bin/pcl" ]]; then
+    curl -sSo bin/pcl "${PCL_DOWNLOAD_URL}"
+    chmod +x bin/pcl
+fi
+
+pcl tekton.pcl |
+    bat --file-name=tekton.yml \
+        --paging=never ||
+    report_status "tekton.pcl"
+
+if ((ERRORS > 0)); then
+    err "Errors were found"
+    exit "${ERRORS}"
+else
+    success "All checks pass!"
+fi

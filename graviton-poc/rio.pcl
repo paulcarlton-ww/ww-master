@@ -1,0 +1,95 @@
+@ModuleInfo { minPclVersion = "0.15.0" }
+extends "fshub:com.fs.tekton.Rio:80edc6cf"
+
+pipelines {
+  new {
+    branchName = "main"
+    machine {
+      baseImage = "pcarlton/docker-lint:latest"
+    }
+    build {
+      template = "freestyle:v4:prb"
+      steps {
+        "bin/ci-check"
+      }
+    }
+  }
+  new {
+    local imageName = "hello"
+    branchName = "main"
+    name = "\(imageName)-publish"
+    machine {
+      baseImage = "pcarlton/buildkit-builder:latest"
+    }
+    reports {
+      junit = true
+    }
+    secrets {
+      names {
+        "aws-credentials"
+        "eks-kubeconfig"
+      }
+    }
+    build {
+      template = "freestyle:v4:publish"
+      steps {
+        "bin/build \(imageName)"
+      }
+    }
+    package {
+      dockerLoad = true
+    }
+  }
+  new {
+    local imageName = "tekton-buildkit-builder"
+    branchName = "main"
+    name = "\(imageName)-publish"
+    reports {
+      junit = true
+    }
+    machine {
+      baseImage = "pcarlton/buildkit-builder:latest"
+    }
+    secrets {
+      names {
+        "aws-credentials"
+        "eks-kubeconfig"
+      }
+    }
+    build {
+      template = "freestyle:v4:publish"
+      steps {
+        "bin/build \(imageName)"
+      }
+    }
+    package {
+      dockerLoad = true
+    }
+  }
+  new {
+    local imageName = "fs-buildkit"
+    branchName = "main"
+    name = "\(imageName)-publish"
+    reports {
+      junit = true
+    }
+    machine {
+      baseImage = "pcarlton/buildkit-builder:latest"
+    }
+    secrets {
+      names {
+        "aws-credentials"
+        "eks-kubeconfig"
+      }
+    }
+    build {
+      template = "freestyle:v4:publish"
+      steps {
+        "bin/build \(imageName)"
+      }
+    }
+    package {
+      dockerLoad = true
+    }
+  }
+}

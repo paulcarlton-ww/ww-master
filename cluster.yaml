@@ -69,6 +69,7 @@ managedNodeGroups:
     maxSize: 4
     desiredCapacity: 3
     volumeSize: 20
+    instanceType: m6g.large
     ssh:
       allow: true
       publicKeyPath: ~/.ssh/id_rsa.pub
@@ -84,11 +85,7 @@ managedNodeGroups:
         externalDNS: true
         certManager: true
         albIngress: true
-    instanceSelector: 
-      cpuArchitecture: amd64
-      memory: 16GiB
-      vCpus: 4
-    
+
 gitops:
   flux:
     gitProvider: github

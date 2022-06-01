@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+_my_path() {
+    f=${BASH_SOURCE[0]}
+    cd "$(dirname "${f}")"
+    while f=$(readlink "$(basename "${f}")"); do
+        cd "$(dirname "${f}")"
+    done
+    pwd -P
+}
+
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "${REPO_ROOT}"
+
+source "lib/log.sh"
+
+PATH=./bin/:${PATH}
+
+docker run \
+    -it \
+    --rm \
+    -v "${REPO_ROOT}":/workspace \
+    -w /workspace \
+    pcarlton/docker-lint:latest \
+    bin/ci-check
