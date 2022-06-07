@@ -9,9 +9,6 @@ metadata:
 spec:
   securityContext:
     allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-        - all
     runAsUser: 1000
     runAsGroup: 1000
   containers:
