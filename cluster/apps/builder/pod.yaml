@@ -7,10 +7,6 @@ metadata:
   labels:
     app: builder
 spec:
-  securityContext:
-    allowPrivilegeEscalation: false
-    runAsUser: 1000
-    runAsGroup: 1000
   containers:
   - image: pcarlton/tekton-buildkit-builder:0.1.1
     command:
@@ -19,3 +15,6 @@ spec:
     imagePullPolicy: IfNotPresent
     name: builder
   restartPolicy: Always
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
