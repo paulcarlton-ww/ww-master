@@ -43,8 +43,8 @@ function args() {
 
 args "$@"
 
-private_key=$(cat ${privatekey_file} | base64 --wrap=0)
-public_key=$(cat ${pubkey_file} | base64 --wrap=0)
+private_key=$(cat ${privatekey_file} | base64)
+public_key=$(cat ${pubkey_file} | base64)
 
 kubectl apply -f - << EOF
 apiVersion: v1
