@@ -6,7 +6,7 @@ metadata:
     app: builder
 spec:
   containers:
-  - image: pcarlton/tekton-buildkit-builder
+  - image: pcarlton/tekton-buildkit-builder:0.1.0
     command:
       - "sleep"
       - "604800"
