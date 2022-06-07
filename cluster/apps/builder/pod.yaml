@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: builder
+  labels:
+    app: builder
+spec:
+  containers:
+  - image: pcarlton/tekton-buildkit-builder
+    command:
+      - "sleep"
+      - "604800"
+    imagePullPolicy: IfNotPresent
+    name: builder
+  restartPolicy: Always
