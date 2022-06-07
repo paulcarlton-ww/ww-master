@@ -60,4 +60,4 @@ metadata:
 type: kubernetes.io/tls
 EOF
 
-restart-kubeseal.sh ${debug}
+${repo_dir}/bin/restart-kubeseal.sh ${debug}
