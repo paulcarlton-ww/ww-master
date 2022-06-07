@@ -14,7 +14,7 @@ function usage()
 }
 
 function args() {
-  repo_dir=$(git rev-parse --show-toplevel)
+  export repo_dir=$(git rev-parse --show-toplevel)
   keys_dir=$HOME/info/$(basename $repo_dir)
   debug=""
   arg_list=( "$@" )
