@@ -51,4 +51,4 @@ git -C ${repo_dir} add pub-sealed-secrets.pem
 git -C ${repo_dir} commit -a -m "add sealed secret public key"
 git -C ${repo_dir} push
 
-${repo_dir}/bin/setup-kubeseal.sh ${debug} --privatekey-file ${keys_dir}/sealed-secrets-key --pubkey-file ${keys_dir}/pub-sealed-secrets.pem
+${repo_dir}/bin/setup-kubeseal.sh ${debug} --privatekey-file ${keys_dir}/sealed-secrets-key --pubkey-file ${keys_dir}/pub-sealed-secrets.crt
