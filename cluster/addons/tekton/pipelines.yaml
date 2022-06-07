@@ -1,0 +1,25 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: Bucket
+metadata:
+  name: pipeline
+  namespace: tekton
+spec:
+  interval: 5m0s
+  provider: gcp
+  bucketName: tekton-releases
+  endpoint: storage.googleapis.com
+  timeout: 30s
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: pipeline
+  namespace: tekton
+spec:
+  interval: 10m0s
+  path: ./pipeline/previous/v0.36.0
+  prune: true
+  sourceRef:
+    kind: Bucket
+    name: pipeline

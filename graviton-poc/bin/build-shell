@@ -12,7 +12,7 @@ _my_path() {
 }
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
-cd "${REPO_ROOT}"
+cd "${REPO_ROOT}/graviton-poc"
 
 source "lib/log.sh"
 

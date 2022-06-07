@@ -21,24 +21,6 @@ vpc:
   publicAccessCIDRs: ["81.152.127.116/32", "17.0.0.0/8"]
 
 managedNodeGroups:
-  - name: ng-1-workers
-    minSize: 2
-    maxSize: 4
-    desiredCapacity: 3
-    instanceType: t3.large
-    volumeSize: 20
-    ssh:
-      allow: true
-      publicKeyPath: ~/.ssh/id_rsa.pub
-    labels: {role: worker}
-    tags:
-      nodegroup-role: worker
-    iam:
-      withAddonPolicies:
-        externalDNS: true
-        certManager: true
-        albIngress: true
-
   - name: ng-2-amd
     minSize: 1
     maxSize: 4
@@ -50,10 +32,6 @@ managedNodeGroups:
     labels: {role: amd}
     tags:
       nodegroup-role: amd
-    taints:
-    - key: amd
-      value: "true"
-      effect: NoSchedule
     iam:
       withAddonPolicies:
         externalDNS: true
@@ -76,10 +54,6 @@ managedNodeGroups:
     labels: {role: arm}
     tags:
       nodegroup-role: arm
-    taints:
-    - key: arm
-      value: "true"
-      effect: NoSchedule
     iam:
       withAddonPolicies:
         externalDNS: true

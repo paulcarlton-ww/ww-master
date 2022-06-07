@@ -119,7 +119,7 @@ target "hello-arm64-dockerload" {
 
 target "tekton-buildkit-builder" {
     context = "images/tekton-buildkit-builder"
-    tags = ["pcarlton/buildkit-builder:latest"]
+    tags = ["pcarlton/tekton-buildkit-builder:latest"]
     platforms = ["linux/amd64"]
 }
 

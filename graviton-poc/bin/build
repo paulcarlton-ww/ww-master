@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euox pipefail
+
 _my_path() {
     f=${BASH_SOURCE[0]}
     cd "$(dirname "${f}")"
@@ -10,7 +12,7 @@ _my_path() {
 }
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
-cd "${REPO_ROOT}"
+cd "${REPO_ROOT}/graviton-poc"
 
 source "lib/log.sh"
 
@@ -25,7 +27,7 @@ setup_builders() {
             --node arm64builder \
             --platform linux/arm64 \
             --driver kubernetes \
-            --driver-opt image=pcarlton/fs-buildkit:latest-arm64,namespace=tekton-builder,replicas=1,nodeselector=beta.kubernetes.io/arch=arm64,rootless=true
+            --driver-opt namespace=tekton-builder,replicas=1,nodeselector=beta.kubernetes.io/arch=arm64,rootless=true
         success-step "arm64builder configured."
     fi
 
@@ -37,7 +39,7 @@ setup_builders() {
             --node amd64builder \
             --platform linux/amd64 \
             --driver kubernetes \
-            --driver-opt image=pcarlton/fs-buildkit:latest-amd64,namespace=tekton-builder,replicas=1,nodeselector=beta.kubernetes.io/arch=amd64,rootless=true
+            --driver-opt namespace=tekton-builder,replicas=1,nodeselector=beta.kubernetes.io/arch=amd64,rootless=true
         success-step "amd64builder configured."
     fi
 
