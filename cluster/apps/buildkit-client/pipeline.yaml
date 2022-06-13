@@ -98,7 +98,6 @@ spec:
   - name: image
     resourceRef:
       name: built-image
-      namespace: tekton
   params:
   - name: repo-url
     value: https://github.com/paulcarlton-ww/kraan.git
