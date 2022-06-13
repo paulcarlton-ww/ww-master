@@ -95,9 +95,10 @@ spec:
           requests:
             storage: 1Gi
   resources:
-  - name: image
-    resourceRef:
-      name: built-image
+  - output:
+    - name: image
+      resourceRef:
+        name: built-image
   params:
   - name: repo-url
     value: https://github.com/paulcarlton-ww/kraan.git
