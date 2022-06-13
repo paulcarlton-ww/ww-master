@@ -50,7 +50,7 @@ spec:
       value: $(params.dockerfile)
     - name: BUILDKIT_CLIENT_IMAGE
       value: $(params.builder-image)
-    - name: buildkit-daemon
+    - name: BUILDKIT_DAEMON_ADDRESS
       value: $(params.buildkit-daemon)
     - name: BUILDKIT_CLIENT_CERTS
       value: $(params.client-certs)
