@@ -13,6 +13,14 @@ spec:
   - name: branch-name
     type: string
     description: The git branch to clone.
+  - name: DOCKERFILE
+    vtype: string
+  - name: BUILDKIT_CLIENT_IMAGE
+    type: string
+  - name: BUILDKIT_DAEMON_ADDRESS
+    type: string
+  - name: BUILDKIT_CLIENT_CERTS
+    type: string
   workspaces:
   - name: shared-data
     description: |
