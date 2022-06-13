@@ -13,13 +13,13 @@ spec:
   - name: branch-name
     type: string
     description: The git branch to clone.
-  - name: DOCKERFILE
+  - name: dockerfile
     type: string
-  - name: BUILDKIT_CLIENT_IMAGE
+  - name: builder-image
     type: string
   - name: BUILDKIT_DAEMON_ADDRESS
     type: string
-  - name: BUILDKIT_CLIENT_CERTS
+  - name: client-certs
     type: string
   workspaces:
   - name: shared-data
@@ -50,7 +50,7 @@ spec:
       value: $(params.dockerfile)
     - name: BUILDKIT_CLIENT_IMAGE
       value: $(params.builder-image)
-    - name: BUILDKIT_DAEMON_ADDRESS
+    - name: buildkit-daemon
       value: $(params.buildkit-daemon)
     - name: BUILDKIT_CLIENT_CERTS
       value: $(params.client-certs)
