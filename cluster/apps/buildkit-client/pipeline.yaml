@@ -1,3 +1,14 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: built-image
+  namespace: tekton
+spec:
+  type: image
+  params:
+    - name: url
+      value: pcarlton/kraan:v3.0.0-dev
+---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
