@@ -6,9 +6,9 @@ This repository is the cluster repository for paulcarlton-core EKS cluster. The 
     eksctl create cluster --config-file eksctl-config-ww-core.yaml 
     aws eks --region "$AWS_REGION" update-kubeconfig --name paulcarlton-core
 
-## AMP
+## Tekton Buildx
 
-The `amp` folder contains scripts to deploy Prometheus remote write agent to the cluster in order to forward metrics tos Amazon Managed Prometheus and from there ownward to pager duty.
+The `graviton` folder contains a santitized copy of the Fruitstand graviton POC.
 
 To deploy this execute the amp/setup.sh script. This script requires environmental variables containing pager duty integration key and cluster name.
 
