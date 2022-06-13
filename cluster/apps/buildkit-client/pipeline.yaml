@@ -59,6 +59,7 @@ apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
   name: clone-build
+  namespace: tekton
 spec:
   podTemplate:
     affinity:
