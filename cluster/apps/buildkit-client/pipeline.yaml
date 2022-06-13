@@ -1,13 +1,3 @@
-apiVersion: tekton.dev/v1alpha1
-kind: PipelineResource
-metadata:
-  name: built-image
-  namespace: tekton
-spec:
-  type: image
-  params:
-    - name: url
-      value: pcarlton/kraan:v3.0.0-dev
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -95,10 +85,13 @@ spec:
           requests:
             storage: 1Gi
   resources:
-  - output:
-    - name: image
-      resourceRef:
-        name: built-image
+    outputs:
+      - name: image
+        resourceSpec:
+          type: image
+          params:
+            - name: url
+              value: pcarlton/kraan:v3.0.0-dev
   params:
   - name: repo-url
     value: https://github.com/paulcarlton-ww/kraan.git
