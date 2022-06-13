@@ -27,7 +27,7 @@ setup_builders() {
             --node arm64builder \
             --platform linux/arm64 \
             --driver kubernetes \
-            --driver-opt namespace=tekton-builder,replicas=1,nodeselector=beta.kubernetes.io/arch=arm64,rootless=true
+            --driver-opt namespace=builder,replicas=1,nodeselector=beta.kubernetes.io/arch=arm64,rootless=true
         success-step "arm64builder configured."
     fi
 
@@ -39,7 +39,7 @@ setup_builders() {
             --node amd64builder \
             --platform linux/amd64 \
             --driver kubernetes \
-            --driver-opt namespace=tekton-builder,replicas=1,nodeselector=beta.kubernetes.io/arch=amd64,rootless=true
+            --driver-opt namespace=builder,replicas=1,nodeselector=beta.kubernetes.io/arch=amd64,rootless=true
         success-step "amd64builder configured."
     fi
 

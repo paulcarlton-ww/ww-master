@@ -1,0 +1,25 @@
+{
+  "Name": "k8sbuilder",
+  "Driver": "kubernetes",
+  "Nodes": [
+    {
+      "Name": "arm64builder",
+      "Endpoint": "kubernetes:///k8sbuilder?service=buildkitd&kubeconfig=%2FUsers%2Fpaulc%2F.kube%2Fkubeconfig_tekton-builder.yaml",
+      "Platforms": [
+        {
+          "architecture": "arm64",
+          "os": "linux"
+        }
+      ],
+      "Flags": null,
+      "DriverOpts": {
+        "namespace": "builder",
+        "nodeselector": "beta.kubernetes.io/arch=arm64",
+        "replicas": "1",
+        "rootless": "true"
+      },
+      "Files": null
+    }
+  ],
+  "Dynamic": false
+}

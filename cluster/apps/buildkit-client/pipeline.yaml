@@ -1,0 +1,85 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: build-image
+  namespace: tekton
+spec:
+  description: |
+    clone repo and build image
+  params:
+  - name: repo-url
+    type: string
+    description: The git repository URL to clone from.
+  - name: branch-name
+    type: string
+    description: The git branch to clone.
+  workspaces:
+  - name: shared-data
+    description: |
+      This workspace will receive the cloned git repo and be passed
+      to the next Task for the image to be built.
+  tasks:
+  - name: fetch-repo
+    taskRef:
+      name: git-clone
+    workspaces:
+    - name: output
+      workspace: shared-data
+    params:
+    - name: url
+      value: $(params.repo-url)
+    - name: revision
+      value: $(params.branch-name)
+  - name: build
+    runAfter: ["fetch-repo"]
+    taskRef:
+      name: buildkit
+    workspaces:
+    - name: source
+      workspace: shared-data
+    params:
+    - name: DOCKERFILE
+      value: $(params.dockerfile)
+    - name: BUILDKIT_CLIENT_IMAGE
+      value: $(params.builder-image)
+    - name: BUILDKIT_DAEMON_ADDRESS
+      value: $(params.buildkit-daemon)
+    - name: BUILDKIT_CLIENT_CERTS
+      value: $(params.client-certs)
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: clone-build
+spec:
+  podTemplate:
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+            - key: "tekton.dev/pipelineRun"
+              operator: In
+              values:
+              - clone-build
+          topologyKey: kubernetes.io/hostname
+  pipelineRef:
+    name: build-image
+  workspaces:
+  - name: shared-data
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+  params:
+  - name: repo-url
+    value: https://github.com/paulcarlton-ww/kraan.git
+  - name: branch-name
+    value: master
+  - name: BUILDKIT_DAEMON_ADDRESS
+    value: buildkit:tcp://buildkitd:1234
+  - name: BUILDKIT_CLIENT_CERTS
+    value: buildkit:buildkit-client-certs
