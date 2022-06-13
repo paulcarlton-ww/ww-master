@@ -56,6 +56,12 @@ spec:
     workspaces:
     - name: source
       workspace: shared-data
+    resources:
+      outputs:
+        - name: image
+          resourceRef:
+            name: built-image
+            namespace: tekton
     params:
     - name: DOCKERFILE
       value: $(params.dockerfile)
