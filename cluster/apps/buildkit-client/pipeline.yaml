@@ -87,7 +87,12 @@ spec:
     value: https://github.com/paulcarlton-ww/kraan.git
   - name: branch-name
     value: master
-  - name: BUILDKIT_DAEMON_ADDRESS
+  - name: builder-image
+    value: moby/buildkit:master-rootless
+  - name: buildkit-daemon
     value: buildkit:tcp://buildkitd:1234
-  - name: BUILDKIT_CLIENT_CERTS
+  - name: client-certs
     value: buildkit:buildkit-client-certs
+  - name: dockerfile
+    value: ./Dockerfile
+
