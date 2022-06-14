@@ -3,18 +3,27 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: builder
-  namespace: default
+  namespace: tekton-builder
   labels:
     app: builder
 spec:
   containers:
-  - image: pcarlton/tekton-buildkit-builder:0.1.1
+  - image: moby/buildkit:master-rootless
     command:
       - "sleep"
       - "604800"
     imagePullPolicy: IfNotPresent
     name: builder
+    volumeMounts:
+    - mountPath: /certs
+      name: certs
+      readOnly: true
   restartPolicy: Always
   securityContext:
     runAsUser: 1000
     runAsGroup: 1000
+  volumes:
+  - name: certs
+    secret:
+      defaultMode: 420
+      secretName: buildkit-client-certs
