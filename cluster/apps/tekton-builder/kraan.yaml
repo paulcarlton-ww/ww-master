@@ -2,7 +2,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: clone-build
+  name: kraan-build
   namespace: tekton-builder
 spec:
   podTemplate:
