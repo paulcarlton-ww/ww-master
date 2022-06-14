@@ -6,6 +6,7 @@ metadata:
   namespace: tekton-builder
 spec:
   podTemplate:
+    automountServiceAccountToken: false
     affinity:
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
