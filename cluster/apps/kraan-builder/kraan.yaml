@@ -1,0 +1,57 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: clone-build
+  namespace: kraan-builder
+spec:
+  podTemplate:
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+            - key: "tekton.dev/pipelineRun"
+              operator: In
+              values:
+              - clone-build
+          topologyKey: kubernetes.io/hostname
+  pipelineRef:
+    name: build-image
+    namespace: tekton
+  workspaces:
+  - name: shared-data
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+  - name: registry-creds
+    secret:
+      secretName: docker-creds
+  params:
+  - name: repo-url
+    value: https://github.com/paulcarlton-ww/kraan.git
+  - name: branch-name
+    value: master
+  - name: builder-image
+    value: moby/buildkit:master-rootless
+  - name: buildkit-daemon
+    value: buildkit:tcp://buildkitd:1234
+  - name: client-certs
+    value: buildkit:buildkit-client-certs
+  - name: dockerfile
+    value: ./Dockerfile
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: target-image
+  namespace: kraan-builder
+spec:
+  type: image
+  params:
+    - name: url
+      value: pcarlton/kraan:3.0.0-dev
