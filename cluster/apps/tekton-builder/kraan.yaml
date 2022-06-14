@@ -31,7 +31,7 @@ spec:
     secret:
       secretName: docker-creds
   resources:
-    - name: target-image
+    - name: image
       resourceSpec:
         type: image
         params:

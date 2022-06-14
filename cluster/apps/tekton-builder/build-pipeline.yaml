@@ -31,7 +31,7 @@ spec:
     description: |
       This workspace will be mapped to a secret containing registry credentials.
   resources:
-  - name: target-image
+  - name: image
     type: image
   tasks:
   - name: fetch-repo
@@ -59,7 +59,7 @@ spec:
     resources:
       outputs:
       - name: image
-        resource: target-image
+        resource: image
     params:
     - name: DOCKERFILE
       value: $(params.dockerfile)
