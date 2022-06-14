@@ -37,7 +37,7 @@ spec:
   - name: fetch-repo
     taskRef:
       name: git-clone
-      namespace: tekton
+      kind: ClusterTask
     workspaces:
     - name: output
       workspace: shared-data
@@ -50,7 +50,7 @@ spec:
     runAfter: ["fetch-repo"]
     taskRef:
       name: buildkit
-      namespace: tekton
+      kind: ClusterTask
     workspaces:
     - name: source
       workspace: shared-data

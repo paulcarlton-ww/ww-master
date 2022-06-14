@@ -1,8 +1,7 @@
 apiVersion: tekton.dev/v1beta1
-kind: Task
+kind: ClusterTask
 metadata:
   name: git-clone
-  namespace: tekton
   labels:
     app.kubernetes.io/version: "0.6"
   annotations:
