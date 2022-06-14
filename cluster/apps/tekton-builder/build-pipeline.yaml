@@ -27,9 +27,6 @@ spec:
     description: |
       This workspace will receive the cloned git repo and be passed
       to the next Task for the image to be built.
-  - name: registry-creds
-    description: |
-      This workspace will be mapped to a secret containing registry credentials.
   resources:
   - name: image
     type: image
