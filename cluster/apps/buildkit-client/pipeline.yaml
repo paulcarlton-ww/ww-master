@@ -29,6 +29,10 @@ spec:
     description: |
       This workspace will receive the cloned git repo and be passed
       to the next Task for the image to be built.
+  resources:
+    outputs:
+    - name: image
+      type: image-type
   tasks:
   - name: fetch-repo
     taskRef:
@@ -60,8 +64,6 @@ spec:
         - name: image
           resource: target-image
     params:
-    - name: IMAGE
-      value: $(params.imageUrl):$(params.imageTag)
     - name: DOCKERFILE
       value: $(params.dockerfile)
     - name: BUILDKIT_CLIENT_IMAGE
@@ -115,10 +117,6 @@ spec:
     value: buildkit:buildkit-client-certs
   - name: dockerfile
     value: ./Dockerfile
-  - name: imageTag
-    value: "3.0.0-dev"
-  - name: imageUrl
-    value: pcarlton/kraan
 ---
 apiVersion: tekton.dev/v1alpha1
 kind: PipelineResource
