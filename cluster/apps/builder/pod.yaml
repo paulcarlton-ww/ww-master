@@ -8,7 +8,7 @@ metadata:
     app: builder
 spec:
   containers:
-  - image: pcarlton/tekton-buildkit-builder:0.1.1
+  - image: moby/buildkit:master-rootless
     command:
       - "sleep"
       - "604800"
