@@ -25,14 +25,6 @@ metadata:
   namespace: tekton-builder
 spec:
   activeDeadlineSeconds: 5355
-  affinity:
-    podAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: affinity-assistant
-            app.kubernetes.io/instance: affinity-assistant-1fc09e60a2
-        topologyKey: kubernetes.io/hostname
   containers:
   - args:
     - -wait_file
