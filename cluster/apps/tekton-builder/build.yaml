@@ -7,8 +7,6 @@ spec:
   activeDeadlineSeconds: 5355
   containers:
   - args:
-    - buildctl
-    - --
     - --debug
     - --addr=buildkit:tcp://buildkitd:1234
     - --tlscacert
@@ -33,13 +31,11 @@ spec:
     - --import-cache
     - type=registry,ref=pcarlton/kraan:3.0.0-dev
     command:
-    - /tekton/bin/entrypoint
+    - buildctl
     image: moby/buildkit:master-rootless
     imagePullPolicy: IfNotPresent
     name: step-build-and-push
     resources: {}
-    terminationMessagePath: /tekton/termination
-    terminationMessagePolicy: File
     volumeMounts:
     - mountPath: /certs
       name: certs
