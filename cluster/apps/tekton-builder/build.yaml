@@ -1,41 +1,12 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  annotations:
-    kubernetes.io/psp: eks.privileged
-    pipeline.tekton.dev/affinity-assistant: affinity-assistant-1fc09e60a2
-    pipeline.tekton.dev/release: 422a468
-    tekton.dev/categories: Image Build
-    tekton.dev/pipelines.minVersion: 0.12.1
-    tekton.dev/platforms: linux/amd64
-    tekton.dev/ready: READY
-    tekton.dev/tags: image-build
-  labels:
-    app.kubernetes.io/managed-by: tekton-pipelines
-    app.kubernetes.io/version: "0.1"
-    kustomize.toolkit.fluxcd.io/name: flux-system
-    kustomize.toolkit.fluxcd.io/namespace: flux-system
-    tekton.dev/clusterTask: buildkit
-    tekton.dev/memberOf: tasks
-    tekton.dev/pipeline: build-image
-    tekton.dev/pipelineRun: kraan-build
-    tekton.dev/pipelineTask: build
-    tekton.dev/taskRun: kraan-build-build
   name: kraan-build-build-pod1
   namespace: tekton-builder
 spec:
   activeDeadlineSeconds: 5355
   containers:
   - args:
-    - -wait_file
-    - /tekton/run/0/out
-    - -post_file
-    - /tekton/run/1/out
-    - -termination_path
-    - /tekton/termination
-    - -step_metadata_dir
-    - /tekton/run/1/status
-    - -entrypoint
     - buildctl
     - --
     - --debug
