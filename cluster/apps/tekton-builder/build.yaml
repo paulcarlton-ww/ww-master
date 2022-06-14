@@ -81,10 +81,6 @@ spec:
     - mountPath: /certs
       name: certs
       readOnly: true
-    - mountPath: /workspace/source
-      name: ws-stqdh
-    - mountPath: /workspace
-      name: tekton-internal-workspace
     workingDir: /workspace/source
   dnsPolicy: ClusterFirst
   enableServiceLinks: true
@@ -106,12 +102,7 @@ spec:
     operator: Exists
     tolerationSeconds: 300
   volumes:
-  - emptyDir: {}
-    name: tekton-internal-workspace
   - name: certs
     secret:
       defaultMode: 420
       secretName: buildkit-client-certs
-  - name: ws-stqdh
-    persistentVolumeClaim:
-      claimName: pvc-8c7c4a84cb
