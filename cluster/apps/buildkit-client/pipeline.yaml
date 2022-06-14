@@ -46,6 +46,14 @@ spec:
     workspaces:
     - name: source
       workspace: shared-data
+    resources:
+      outputs:
+        - name: image
+          resourceSpec:
+            type: image
+            params:
+              - name: url
+                value: $(params.image)
     params:
     - name: DOCKERFILE
       value: $(params.dockerfile)
@@ -55,6 +63,8 @@ spec:
       value: $(params.buildkit-daemon)
     - name: BUILDKIT_CLIENT_CERTS
       value: $(params.client-certs)
+    - name: image
+      value: $(params.image)
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
@@ -84,14 +94,6 @@ spec:
         resources:
           requests:
             storage: 1Gi
-  resources:
-    outputs:
-      - name: image
-        resourceSpec:
-          type: image
-          params:
-            - name: url
-              value: pcarlton/kraan:v3.0.0-dev
   params:
   - name: repo-url
     value: https://github.com/paulcarlton-ww/kraan.git
@@ -105,4 +107,6 @@ spec:
     value: buildkit:buildkit-client-certs
   - name: dockerfile
     value: ./Dockerfile
+  - name: image
+    value: pcarlton/kraan
 
