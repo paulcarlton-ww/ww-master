@@ -39,5 +39,5 @@ mkdir -p $DIR ${DIR}/daemon ${DIR}/client
 	rm -f rootCA.pem rootCA-key.pem
 
 	kubectl -n buildkit create secret generic ${PRODUCT}-daemon-certs --dry-run=client -o yaml --from-file=./daemon >${PRODUCT}-daemon-certs.yaml
-	kubectl -n buildkit create secret generic ${PRODUCT}-client-certs --dry-run=client -o yaml --from-file=./client >${PRODUCT}-client-certs.yaml
+	kubectl -n tekton-builder create secret generic ${PRODUCT}-client-certs --dry-run=client -o yaml --from-file=./client >${PRODUCT}-client-certs.yaml
 )
