@@ -3,7 +3,7 @@ apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
   name: clone-build
-  namespace: kraan-builder
+  namespace: tekton-builder
 spec:
   podTemplate:
     affinity:
@@ -18,7 +18,6 @@ spec:
           topologyKey: kubernetes.io/hostname
   pipelineRef:
     name: build-image
-    namespace: tekton
   workspaces:
   - name: shared-data
     volumeClaimTemplate:
@@ -49,7 +48,7 @@ apiVersion: tekton.dev/v1alpha1
 kind: PipelineResource
 metadata:
   name: target-image
-  namespace: kraan-builder
+  namespace: tekton-builder
 spec:
   type: image
   params:
