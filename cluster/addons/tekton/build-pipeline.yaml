@@ -55,14 +55,8 @@ spec:
     - name: dockerconfig
       workspace: registry-creds
     resources:
-      inputs:
-        - name: source
-          resource: shared-data
-        - name: dockerconfig
-          resource: registry-creds
-      outputs:
-        - name: image
-          resource: target-image
+    - name: image
+      type: image-type
     params:
     - name: DOCKERFILE
       value: $(params.dockerfile)
