@@ -44,6 +44,6 @@ spec:
   - name: buildkit-daemon
     value: buildkit:tcp://buildkitd:1234
   - name: client-certs
-    value: buildkit:buildkit-client-certs
+    value: buildkit-client-certs
   - name: dockerfile
     value: ./Dockerfile
