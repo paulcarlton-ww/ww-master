@@ -18,6 +18,8 @@ spec:
     type: string
   - name: builder-image
     type: string
+  - name: target-image
+    type: string
   - name: buildkit-daemon
     type: string
   - name: client-certs
@@ -46,15 +48,20 @@ spec:
     workspaces:
     - name: source
       workspace: shared-data
+    - name: dockerconfig
+      workspace: registry-creds
     resources:
+      inputs:
+        - name: source
+          resource: shared-data
+        - name: dockerconfig
+          resource: registry-creds
       outputs:
         - name: image
-          resourceSpec:
-            type: image
-            params:
-              - name: url
-                value: $(params.image)
+          resource: target-image
     params:
+    - name: IMAGE
+      value: $(params.imageUrl):$(params.imageTag)
     - name: DOCKERFILE
       value: $(params.dockerfile)
     - name: BUILDKIT_CLIENT_IMAGE
@@ -63,8 +70,6 @@ spec:
       value: $(params.buildkit-daemon)
     - name: BUILDKIT_CLIENT_CERTS
       value: $(params.client-certs)
-    - name: image
-      value: $(params.image)
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
@@ -94,6 +99,9 @@ spec:
         resources:
           requests:
             storage: 1Gi
+  - name: registry-creds
+    secret:
+      secretName: docker-creds
   params:
   - name: repo-url
     value: https://github.com/paulcarlton-ww/kraan.git
@@ -107,6 +115,18 @@ spec:
     value: buildkit:buildkit-client-certs
   - name: dockerfile
     value: ./Dockerfile
-  - name: image
+  - name: imageTag
+    value: "3.0.0-dev"
+  - name: imageUrl
     value: pcarlton/kraan
-
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: target-image
+  namespace: tekton
+spec:
+  type: image
+  params:
+    - name: url
+      value: pcarlton/kraan:3.0.0-dev
