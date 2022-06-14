@@ -54,8 +54,6 @@ spec:
     workspaces:
     - name: source
       workspace: shared-data
-    - name: dockerconfig
-      workspace: registry-creds
     resources:
       outputs:
       - name: image

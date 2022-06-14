@@ -27,9 +27,6 @@ spec:
         resources:
           requests:
             storage: 1Gi
-  - name: registry-creds
-    secret:
-      secretName: docker-creds
   resources:
     - name: image
       resourceSpec:
