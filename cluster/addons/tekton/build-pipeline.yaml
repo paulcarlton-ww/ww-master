@@ -30,9 +30,8 @@ spec:
       This workspace will receive the cloned git repo and be passed
       to the next Task for the image to be built.
   resources:
-    outputs:
-    - name: image
-      type: image-type
+  - name: image
+    type: image-type
   tasks:
   - name: fetch-repo
     taskRef:
