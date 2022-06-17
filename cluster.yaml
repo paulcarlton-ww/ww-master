@@ -18,7 +18,7 @@ vpc:
   clusterEndpoints:
     publicAccess:  true
     privateAccess: true
-  publicAccessCIDRs: ["81.152.127.116/32", "17.0.0.0/8"]
+  publicAccessCIDRs: ["31.54.142.17/32", "17.0.0.0/8"]
 
 managedNodeGroups:
   - name: ng-2-amd
@@ -39,15 +39,15 @@ managedNodeGroups:
         albIngress: true
     instanceSelector:
       cpuArchitecture: amd64
-      memory: 16GiB
-      vCpus: 4
+      memory: 32GiB
+      vCpus: 16
 
   - name: ng-3-arm
     minSize: 1
     maxSize: 4
     desiredCapacity: 3
     volumeSize: 20
-    instanceType: m6g.large
+    instanceType: m6g.16xlarge
     ssh:
       allow: true
       publicKeyPath: ~/.ssh/id_rsa.pub

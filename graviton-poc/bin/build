@@ -27,7 +27,7 @@ setup_builders() {
             --node arm64builder \
             --platform linux/arm64 \
             --driver kubernetes \
-            --driver-opt namespace=builder,replicas=1,nodeselector=beta.kubernetes.io/arch=arm64,rootless=true
+            --driver-opt image=moby/buildkit:v0.10.3-rootless,namespace=builder,replicas=1,nodeselector=beta.kubernetes.io/arch=arm64,rootless=true,requests.cpu=4,requests.memory=8G,limits.cpu=8,limits.memory=16G
         success-step "arm64builder configured."
     fi
 
@@ -39,7 +39,7 @@ setup_builders() {
             --node amd64builder \
             --platform linux/amd64 \
             --driver kubernetes \
-            --driver-opt namespace=builder,replicas=1,nodeselector=beta.kubernetes.io/arch=amd64,rootless=true
+            --driver-opt image=moby/buildkit:v0.10.3-rootless,namespace=builder,replicas=1,nodeselector=beta.kubernetes.io/arch=amd64,rootless=true,requests.cpu=4,requests.memory=8G,limits.cpu=8,limits.memory=16G
         success-step "amd64builder configured."
     fi
 

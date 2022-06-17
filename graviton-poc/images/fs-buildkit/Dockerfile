@@ -1,3 +1,3 @@
-ARG BUILDKIT_VERSION=v0.9.3-rootless
+ARG BUILDKIT_VERSION=v0.10.3
 FROM moby/buildkit:${BUILDKIT_VERSION} as main
 
