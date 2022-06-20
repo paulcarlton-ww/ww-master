@@ -69,15 +69,15 @@ spec:
             requests:
               cpu: "2"
               memory: 4G
-    securityContext:
-      privileged: false
-    nodeSelector:
-      beta.kubernetes.io/arch: arm64
-    volumes:
-      # buildkit-daemon-certs must contain ca.pem, cert.pem, and key.pem
-      - name: certs
-        secret:
-          secretName: buildkit-daemon-certs
+      securityContext:
+        privileged: false
+      nodeSelector:
+        beta.kubernetes.io/arch: arm64
+      volumes:
+        # buildkit-daemon-certs must contain ca.pem, cert.pem, and key.pem
+        - name: certs
+          secret:
+            secretName: buildkit-daemon-certs
 ---
 apiVersion: v1
 kind: Service
