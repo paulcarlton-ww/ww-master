@@ -37,17 +37,14 @@ managedNodeGroups:
         externalDNS: true
         certManager: true
         albIngress: true
-    instanceSelector:
-      cpuArchitecture: amd64
-      memory: 32GiB
-      vCpus: 16
+    instanceType: t3a.2xlarge
 
   - name: ng-3-arm
     minSize: 1
     maxSize: 4
     desiredCapacity: 3
     volumeSize: 20
-    instanceType: m6g.16xlarge
+    instanceType: m6g.2xlarge
     ssh:
       allow: true
       publicKeyPath: ~/.ssh/id_rsa.pub

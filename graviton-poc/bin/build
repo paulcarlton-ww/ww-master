@@ -20,29 +20,28 @@ PATH=./bin/:${PATH}
 
 setup_builders() {
     heading "Setting up builder instances in EKS..."
-    if ! docker buildx ls | grep arm64builder &> /dev/null; then
-        # Create builder for ARM64.
-        subheading "Creating arm64builder..."
-        docker buildx create --name k8sbuilder \
-            --node arm64builder \
-            --platform linux/arm64 \
-            --driver kubernetes \
-            --driver-opt image=moby/buildkit:v0.10.3-rootless,namespace=builder,replicas=1,nodeselector=beta.kubernetes.io/arch=arm64,rootless=true,requests.cpu=4,requests.memory=8G,limits.cpu=8,limits.memory=16G
-        success-step "arm64builder configured."
-    fi
-
     if ! docker buildx ls | grep amd64builder &> /dev/null; then
         # Create builder for AMD64.
         subheading "Creating amd64builder..."
-        docker buildx create --name k8sbuilder \
-            --append \
+        docker buildx create --name k8sbuilder-amd64 \
             --node amd64builder \
             --platform linux/amd64 \
             --driver kubernetes \
-            --driver-opt image=moby/buildkit:v0.10.3-rootless,namespace=builder,replicas=1,nodeselector=beta.kubernetes.io/arch=amd64,rootless=true,requests.cpu=4,requests.memory=8G,limits.cpu=8,limits.memory=16G
+            --driver-opt image=moby/buildkit:v0.10.3-rootless,namespace=builder,replicas=1,nodeselector=beta.kubernetes.io/arch=amd64,rootless=true,requests.cpu=2,requests.memory=4G,limits.cpu=8,limits.memory=16G
         success-step "amd64builder configured."
     fi
 
+    if ! docker buildx ls | grep arm64builder &> /dev/null; then
+        # Create builder for ARM64.
+        subheading "Creating arm64builder..."
+        docker buildx create --name k8sbuilder-arm64 \
+            --node arm64builder \
+            --platform linux/arm64 \
+            --driver kubernetes \
+            --driver-opt image=moby/buildkit:v0.10.3-rootless,namespace=builder,replicas=1,nodeselector=beta.kubernetes.io/arch=arm64,rootless=true,requests.cpu=2,requests.memory=4G,limits.cpu=8,limits.memory=16G
+        success-step "arm64builder configured."
+    fi
+    exit
     docker buildx use k8sbuilder
 
     # List the builders in Docker.

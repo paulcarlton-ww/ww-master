@@ -6,7 +6,7 @@ metadata:
   name: buildkitd
   namespace: buildkit
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: buildkitd
@@ -16,7 +16,6 @@ spec:
         app: buildkitd
       annotations:
         container.apparmor.security.beta.kubernetes.io/buildkitd: unconfined
-    # see buildkit/docs/rootless.md for caveats of rootless mode
     spec:
       containers:
         - name: buildkitd
@@ -52,10 +51,9 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 30
           securityContext:
-            # Needs Kubernetes >= 1.19
+            privileged: false
             seccompProfile:
               type: Unconfined
-            # To change UID/GID, you need to rebuild the image
             runAsUser: 1000
             runAsGroup: 1000
           ports:
@@ -64,11 +62,22 @@ spec:
             - name: certs
               readOnly: true
               mountPath: /certs
-      volumes:
-        # buildkit-daemon-certs must contain ca.pem, cert.pem, and key.pem
-        - name: certs
-          secret:
-            secretName: buildkit-daemon-certs
+          resources:
+            limits:
+              cpu: "8"
+              memory: 16G
+            requests:
+              cpu: "2"
+              memory: 4G
+    securityContext:
+      privileged: false
+    nodeSelector:
+      beta.kubernetes.io/arch: arm64
+    volumes:
+      # buildkit-daemon-certs must contain ca.pem, cert.pem, and key.pem
+      - name: certs
+        secret:
+          secretName: buildkit-daemon-certs
 ---
 apiVersion: v1
 kind: Service
